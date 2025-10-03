@@ -28,78 +28,147 @@ export class AnalyticsService {
     console.log('[Analytics] Page View (handled by KARTE tracker):', pageName);
   }
 
+  // view_item: 商品詳細ページ閲覧時
   trackProductView(product: Product) {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
     this.pushToDataLayer('view_item', {
-      item_id: product.id,
       item_name: product.name,
       price: product.price,
-      category: product.category,
-      stock: product.stock
+      item_url: `${baseUrl}/products/${product.id}`,
+      item_image_url: product.image,
+      category_name: product.category
     });
   }
 
-  trackAddToCart(product: Product, quantity: number) {
+  // cart: カート追加時（カート状態全体を送信）
+  trackAddToCart(product: Product, quantity: number, allCartItems: CartItem[], allProducts: Product[]) {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    
+    // カート内の全商品情報
+    const items = allCartItems.map(cartItem => {
+      const prod = allProducts.find(p => p.id === cartItem.productId);
+      return {
+        item_id: cartItem.productId,
+        name: prod?.name || '',
+        price: prod?.price || 0,
+        quantity: cartItem.quantity,
+        item_url: `${baseUrl}/products/${cartItem.productId}`,
+        item_image_url: prod?.image || '',
+        category_name: prod?.category || ''
+      };
+    });
+
+    const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+
     this.pushToDataLayer('cart', {
-      item_id: product.id,
-      item_name: product.name,
-      price: product.price,
-      quantity: quantity,
-      value: product.price * quantity,
-      action: 'add'
+      price: totalPrice,
+      quantity: totalQuantity,
+      status: items.length > 0,
+      items: items,
+      added_item_id: product.id,
+      deleted_item_id: null,
+      item_ids: items.map(item => item.item_id),
+      item_names: items.map(item => item.name),
+      item_prices: items.map(item => item.price),
+      item_quantities: items.map(item => item.quantity),
+      item_urls: items.map(item => item.item_url),
+      item_image_urls: items.map(item => item.item_image_url)
     });
   }
 
-  trackRemoveFromCart(product: Product, quantity: number) {
+  // cart: カート削除時（カート状態全体を送信）
+  trackRemoveFromCart(product: Product, allCartItems: CartItem[], allProducts: Product[]) {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    
+    // カート内の全商品情報
+    const items = allCartItems.map(cartItem => {
+      const prod = allProducts.find(p => p.id === cartItem.productId);
+      return {
+        item_id: cartItem.productId,
+        name: prod?.name || '',
+        price: prod?.price || 0,
+        quantity: cartItem.quantity,
+        item_url: `${baseUrl}/products/${cartItem.productId}`,
+        item_image_url: prod?.image || '',
+        category_name: prod?.category || ''
+      };
+    });
+
+    const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+
     this.pushToDataLayer('cart', {
-      item_id: product.id,
-      item_name: product.name,
-      price: product.price,
-      quantity: quantity,
-      action: 'remove'
+      price: totalPrice,
+      quantity: totalQuantity,
+      status: items.length > 0,
+      items: items,
+      added_item_id: null,
+      deleted_item_id: product.id,
+      item_ids: items.map(item => item.item_id),
+      item_names: items.map(item => item.name),
+      item_prices: items.map(item => item.price),
+      item_quantities: items.map(item => item.quantity),
+      item_urls: items.map(item => item.item_url),
+      item_image_urls: items.map(item => item.item_image_url)
     });
   }
 
-  trackPurchase(items: CartItem[], total: number, orderId: string) {
+  // buy: 購入完了時
+  trackPurchase(items: CartItem[], allProducts: Product[], total: number) {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    
+    const purchaseItems = items.map(cartItem => {
+      const prod = allProducts.find(p => p.id === cartItem.productId);
+      return {
+        item_id: cartItem.productId,
+        name: prod?.name || '',
+        price: prod?.price || 0,
+        quantity: cartItem.quantity,
+        item_url: `${baseUrl}/products/${cartItem.productId}`,
+        item_image_url: prod?.image || '',
+        category_name: prod?.category || ''
+      };
+    });
+
+    const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+
     this.pushToDataLayer('buy', {
-      transaction_id: orderId,
-      value: total,
-      items: items.map(item => ({
-        item_id: item.productId,
-        quantity: item.quantity
-      })),
-      item_count: items.length
+      price: total,
+      quantity: totalQuantity,
+      items: purchaseItems
     });
   }
 
-  trackSearch(query: string, resultCount: number) {
+  // search: 検索ボタン押下時
+  trackSearch(query: string) {
     this.pushToDataLayer('search', {
-      search_term: query,
-      result_count: resultCount
+      keyword: query
     });
   }
 
+  // login: ログイン時
   trackLogin(userId: string) {
-    this.pushToDataLayer('login', {
-      user_id: userId,
-      method: 'email'
-    });
+    this.pushToDataLayer('login', {});
   }
 
-  trackRegister(userId: string) {
+  // signup: 会員登録完了時
+  trackRegister(userId: string, userName: string, email: string) {
     this.pushToDataLayer('signup', {
-      user_id: userId,
-      method: 'email'
+      name: userName,
+      email: email,
+      signup_date: new Date().toISOString().split('T')[0] // YYYY-MM-DD
     });
   }
 
   trackViewCart(itemCount: number, total: number) {
-    // view_cart は使用しない（KARTE の標準イベントに合わせる）
-    console.log('[Analytics] View Cart (not sent as custom event)');
+    // cart イベントで代替
+    console.log('[Analytics] View Cart (use cart event instead)');
   }
 
   trackBeginCheckout(items: CartItem[], total: number) {
-    // begin_checkout は使用しない（KARTE の標準イベントに合わせる）
-    console.log('[Analytics] Begin Checkout (not sent as custom event)');
+    // cart イベントで代替
+    console.log('[Analytics] Begin Checkout (use cart event instead)');
   }
 }
 

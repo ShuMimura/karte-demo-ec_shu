@@ -19,8 +19,8 @@ interface StoreState {
   error: string | null;
   
   // Cart actions
-  addToCart: (product: Product, quantity: number) => void;
-  removeFromCart: (productId: string) => void;
+  addToCart: (product: Product, quantity: number) => Promise<void>;
+  removeFromCart: (productId: string) => Promise<void>;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
   getCartTotal: () => Promise<number>;
@@ -45,7 +45,7 @@ export const useStore = create<StoreState>((set, get) => ({
   error: null,
 
   // Cart actions
-  addToCart: (product: Product, quantity: number) => {
+  addToCart: async (product: Product, quantity: number) => {
     const { cart } = get();
     const existingItem = cart.find(item => item.productId === product.id);
 
@@ -63,15 +63,23 @@ export const useStore = create<StoreState>((set, get) => ({
     storage.set(CART_KEY, newCart);
     set({ cart: newCart });
 
-    // Track analytics
-    analyticsService.trackAddToCart(product, quantity);
+    // Track analytics - カート全体の情報を送信
+    const allProducts = await productService.getAllProducts();
+    analyticsService.trackAddToCart(product, quantity, newCart, allProducts);
   },
 
-  removeFromCart: (productId: string) => {
+  removeFromCart: async (productId: string) => {
     const { cart } = get();
+    const product = await productService.getProduct(productId);
     const newCart = cart.filter(item => item.productId !== productId);
     storage.set(CART_KEY, newCart);
     set({ cart: newCart });
+
+    // Track analytics - カート全体の情報を送信
+    if (product) {
+      const allProducts = await productService.getAllProducts();
+      analyticsService.trackRemoveFromCart(product, newCart, allProducts);
+    }
   },
 
   updateQuantity: (productId: string, quantity: number) => {
@@ -139,7 +147,7 @@ export const useStore = create<StoreState>((set, get) => ({
     try {
       const user = await authService.register(email, password, name);
       set({ user, isLoading: false });
-      analyticsService.trackRegister(user.id);
+      analyticsService.trackRegister(user.id, name, email);
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;

@@ -29,7 +29,7 @@ function ProductsPageContent() {
         
         if (searchQuery) {
           result = await productService.searchProducts(searchQuery);
-          analyticsService.trackSearch(searchQuery, result.length);
+          analyticsService.trackSearch(searchQuery);
         } else if (category !== 'all') {
           result = await productService.getProductsByCategory(category);
         } else {
