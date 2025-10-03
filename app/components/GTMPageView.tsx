@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-export default function GTMPageView() {
+function GTMPageViewContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -20,5 +20,13 @@ export default function GTMPageView() {
   }, [pathname, searchParams]);
 
   return null;
+}
+
+export default function GTMPageView() {
+  return (
+    <Suspense fallback={null}>
+      <GTMPageViewContent />
+    </Suspense>
+  );
 }
 
