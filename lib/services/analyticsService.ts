@@ -32,11 +32,12 @@ export class AnalyticsService {
   trackProductView(product: Product) {
     const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
     this.pushToDataLayer('view_item', {
-      item_name: product.name,
+      item_id: product.id,                    // 必須フィールド
+      name: product.name,                     // item_name → name（KARTEの公式フィールド名）
       price: product.price,
       item_url: `${baseUrl}/products/${product.id}`,
       item_image_url: product.imageUrl,
-      category_name: product.category
+      l_category_name: product.category       // category_name → l_category_name
     });
   }
 
