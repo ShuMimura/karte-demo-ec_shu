@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { analyticsService } from '@/lib/services/analyticsService';
 import Button from '@/app/components/Button';
 
-export default function CheckoutCompletePage() {
+function CheckoutCompleteContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get('orderId');
@@ -100,6 +100,23 @@ export default function CheckoutCompletePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutCompletePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#eaeded] py-12">
+        <div className="max-w-[1500px] mx-auto px-4">
+          <div className="text-center bg-white rounded p-12">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#16a085]"></div>
+            <p className="mt-4 text-gray-600">読み込み中...</p>
+          </div>
+        </div>
+      </div>
+    }>
+      <CheckoutCompleteContent />
+    </Suspense>
   );
 }
 
