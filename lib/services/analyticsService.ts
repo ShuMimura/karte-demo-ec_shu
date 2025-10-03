@@ -22,12 +22,10 @@ export class AnalyticsService {
     console.log('[Analytics]', event, parameters);
   }
 
+  // view は KARTEの計測タグで自動取得されるため、page_view は送信しない
   trackPageView(pageName: string, additionalParams?: Record<string, any>) {
-    this.pushToDataLayer('page_view', {
-      page_name: pageName,
-      page_path: typeof window !== 'undefined' ? window.location.pathname : '',
-      ...additionalParams
-    });
+    // KARTE の view イベントが自動取得するため、dataLayer には送信しない
+    console.log('[Analytics] Page View (handled by KARTE tracker):', pageName);
   }
 
   trackProductView(product: Product) {
@@ -41,26 +39,28 @@ export class AnalyticsService {
   }
 
   trackAddToCart(product: Product, quantity: number) {
-    this.pushToDataLayer('add_to_cart', {
+    this.pushToDataLayer('cart', {
       item_id: product.id,
       item_name: product.name,
       price: product.price,
       quantity: quantity,
-      value: product.price * quantity
+      value: product.price * quantity,
+      action: 'add'
     });
   }
 
   trackRemoveFromCart(product: Product, quantity: number) {
-    this.pushToDataLayer('remove_from_cart', {
+    this.pushToDataLayer('cart', {
       item_id: product.id,
       item_name: product.name,
       price: product.price,
-      quantity: quantity
+      quantity: quantity,
+      action: 'remove'
     });
   }
 
   trackPurchase(items: CartItem[], total: number, orderId: string) {
-    this.pushToDataLayer('purchase', {
+    this.pushToDataLayer('buy', {
       transaction_id: orderId,
       value: total,
       items: items.map(item => ({
@@ -86,24 +86,20 @@ export class AnalyticsService {
   }
 
   trackRegister(userId: string) {
-    this.pushToDataLayer('sign_up', {
+    this.pushToDataLayer('signup', {
       user_id: userId,
       method: 'email'
     });
   }
 
   trackViewCart(itemCount: number, total: number) {
-    this.pushToDataLayer('view_cart', {
-      item_count: itemCount,
-      value: total
-    });
+    // view_cart は使用しない（KARTE の標準イベントに合わせる）
+    console.log('[Analytics] View Cart (not sent as custom event)');
   }
 
   trackBeginCheckout(items: CartItem[], total: number) {
-    this.pushToDataLayer('begin_checkout', {
-      value: total,
-      item_count: items.length
-    });
+    // begin_checkout は使用しない（KARTE の標準イベントに合わせる）
+    console.log('[Analytics] Begin Checkout (not sent as custom event)');
   }
 }
 
