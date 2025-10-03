@@ -1,0 +1,96 @@
+{
+  "products": [
+    {
+      "id": "prod_001",
+      "name": "ワイヤレスイヤホン",
+      "price": 8980,
+      "description": "高音質・ノイズキャンセリング機能付きのワイヤレスイヤホン。長時間バッテリーで快適な音楽体験を。",
+      "imageUrl": "/images/product1.jpg",
+      "category": "electronics",
+      "stock": 50
+    },
+    {
+      "id": "prod_002",
+      "name": "スマートウォッチ",
+      "price": 24800,
+      "description": "健康管理機能が充実したスマートウォッチ。心拍数、睡眠、運動を記録できます。",
+      "imageUrl": "/images/product2.jpg",
+      "category": "electronics",
+      "stock": 30
+    },
+    {
+      "id": "prod_003",
+      "name": "ノートパソコン",
+      "price": 89800,
+      "description": "軽量で高性能なノートパソコン。リモートワークや動画編集に最適。",
+      "imageUrl": "/images/product3.jpg",
+      "category": "electronics",
+      "stock": 15
+    },
+    {
+      "id": "prod_004",
+      "name": "ワイヤレスマウス",
+      "price": 3280,
+      "description": "エルゴノミクスデザインで長時間の使用でも疲れにくい。",
+      "imageUrl": "/images/product4.jpg",
+      "category": "accessories",
+      "stock": 100
+    },
+    {
+      "id": "prod_005",
+      "name": "USB-Cハブ",
+      "price": 4980,
+      "description": "7ポート搭載の多機能USBハブ。HDMI、USB-A、SDカードに対応。",
+      "imageUrl": "/images/product5.jpg",
+      "category": "accessories",
+      "stock": 80
+    },
+    {
+      "id": "prod_006",
+      "name": "Bluetoothスピーカー",
+      "price": 6480,
+      "description": "防水機能付きポータブルスピーカー。アウトドアやお風呂でも使える。",
+      "imageUrl": "/images/product6.jpg",
+      "category": "electronics",
+      "stock": 60
+    },
+    {
+      "id": "prod_007",
+      "name": "モバイルバッテリー",
+      "price": 3980,
+      "description": "大容量20000mAh。スマホを約5回フル充電可能。",
+      "imageUrl": "/images/product7.jpg",
+      "category": "accessories",
+      "stock": 120
+    },
+    {
+      "id": "prod_008",
+      "name": "ウェブカメラ",
+      "price": 7800,
+      "description": "フルHD 1080p対応。オンライン会議やリモートワークに最適。",
+      "imageUrl": "/images/product8.jpg",
+      "category": "electronics",
+      "stock": 45
+    },
+    {
+      "id": "prod_009",
+      "name": "キーボード",
+      "price": 12800,
+      "description": "メカニカルキーボード。タイピング音が心地よく、耐久性抜群。",
+      "imageUrl": "/images/product9.jpg",
+      "category": "accessories",
+      "stock": 35
+    },
+    {
+      "id": "prod_010",
+      "name": "液晶モニター",
+      "price": 32800,
+      "description": "24インチフルHDモニター。仕事にもゲームにも使える万能型。",
+      "imageUrl": "/images/product10.jpg",
+      "category": "electronics",
+      "stock": 25
+    }
+  ]
+}
+
+
