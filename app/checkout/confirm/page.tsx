@@ -47,7 +47,7 @@ export default function CheckoutConfirmPage() {
     const orderId = `order_${Date.now()}`;
     
     // Track purchase event - 商品情報を含めて送信
-    const allProducts = await productService.getAllProducts();
+    const allProducts = await productService.getProducts();
     analyticsService.trackPurchase(cart, allProducts, total);
     
     // Clear cart

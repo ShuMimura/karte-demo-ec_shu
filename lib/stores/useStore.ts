@@ -64,7 +64,7 @@ export const useStore = create<StoreState>((set, get) => ({
     set({ cart: newCart });
 
     // Track analytics - カート全体の情報を送信
-    const allProducts = await productService.getAllProducts();
+    const allProducts = await productService.getProducts();
     analyticsService.trackAddToCart(product, quantity, newCart, allProducts);
   },
 
@@ -77,7 +77,7 @@ export const useStore = create<StoreState>((set, get) => ({
 
     // Track analytics - カート全体の情報を送信
     if (product) {
-      const allProducts = await productService.getAllProducts();
+      const allProducts = await productService.getProducts();
       analyticsService.trackRemoveFromCart(product, newCart, allProducts);
     }
   },
