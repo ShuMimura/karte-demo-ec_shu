@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { CartItem, Product } from '@/lib/types';
 import { useStore } from '@/lib/stores/useStore';
 import { analyticsService } from '@/lib/services/analyticsService';
+import { productService } from '@/lib/services/productService';
 import Button from '@/app/components/Button';
 
 export default function CheckoutConfirmPage() {
