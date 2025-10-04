@@ -55,7 +55,7 @@ export class AnalyticsService {
         quantity: cartItem.quantity,
         item_url: `${baseUrl}/products/${cartItem.productId}`,
         item_image_url: prod?.imageUrl || '',
-        category_name: prod?.category || ''
+        l_category_name: prod?.category || ''
       };
     });
 
@@ -92,7 +92,7 @@ export class AnalyticsService {
         quantity: cartItem.quantity,
         item_url: `${baseUrl}/products/${cartItem.productId}`,
         item_image_url: prod?.imageUrl || '',
-        category_name: prod?.category || ''
+        l_category_name: prod?.category || ''
       };
     });
 
@@ -128,7 +128,7 @@ export class AnalyticsService {
         quantity: cartItem.quantity,
         item_url: `${baseUrl}/products/${cartItem.productId}`,
         item_image_url: prod?.imageUrl || '',
-        category_name: prod?.category || ''
+        l_category_name: prod?.category || ''
       };
     });
 
