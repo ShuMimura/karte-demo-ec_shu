@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { Product } from '@/lib/types';
 import { useStore } from '@/lib/stores/useStore';
+import { useState, useEffect } from 'react';
 
 interface ProductCardProps {
   product: Product;
@@ -10,7 +11,14 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
-  const { addToCart } = useStore();
+  const { addToCart, cart } = useStore();
+  const [isAddedToCart, setIsAddedToCart] = useState(false);
+
+  // カートに追加済みかどうかをチェック
+  useEffect(() => {
+    const inCart = cart.some(item => item.productId === product.id);
+    setIsAddedToCart(inCart);
+  }, [cart, product.id]);
 
   const handleCardClick = (e: React.MouseEvent) => {
     // ボタンのクリックでない場合のみ詳細ページに遷移
@@ -20,6 +28,8 @@ export default function ProductCard({ product }: ProductCardProps) {
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    if (isAddedToCart) return; // 既にカートに追加済みなら何もしない
     
     await addToCart(product, 1);
   };
@@ -58,9 +68,14 @@ export default function ProductCard({ product }: ProductCardProps) {
         {product.stock > 0 && (
           <button 
             onClick={handleAddToCart}
-            className="mt-auto bg-[#16a085] hover:bg-[#138d75] text-white text-xs py-1.5 px-3 rounded-full font-medium transition shadow-sm"
+            disabled={isAddedToCart}
+            className={`mt-auto text-xs py-1.5 px-3 rounded-full font-medium transition shadow-sm ${
+              isAddedToCart
+                ? 'bg-gray-400 text-gray-100 cursor-not-allowed'
+                : 'bg-[#16a085] hover:bg-[#138d75] text-white'
+            }`}
           >
-            カートに入れる
+            {isAddedToCart ? 'カートに追加済み' : 'カートに入れる'}
           </button>
         )}
       </div>

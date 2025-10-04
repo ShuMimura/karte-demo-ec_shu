@@ -7,12 +7,22 @@ import { useEffect, useState } from 'react';
 
 export default function Header() {
   const router = useRouter();
-  const { user, cart, checkAuth, logout } = useStore();
+  const { user, cart, checkAuth, logout, showCartNotification, hideCartNotification } = useStore();
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  // カート通知を3秒後に自動で非表示にする
+  useEffect(() => {
+    if (showCartNotification) {
+      const timer = setTimeout(() => {
+        hideCartNotification();
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showCartNotification, hideCartNotification]);
 
   const cartItemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -82,32 +92,45 @@ export default function Header() {
               </div>
             )}
             
-            <Link 
-              href="/cart" 
-              className="flex items-center gap-2 px-2 py-2 border border-transparent hover:border-white rounded relative"
-            >
-              <div className="relative">
-                <svg 
-                  className="w-10 h-10" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" 
-                  />
-                </svg>
-                {cartItemCount > 0 && (
-                  <span className="absolute -top-1 left-4 bg-[#f08804] text-white text-sm font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                    {cartItemCount}
-                  </span>
-                )}
-              </div>
-              <div className="text-sm font-bold">カート</div>
-            </Link>
+            <div className="relative">
+              <Link 
+                href="/cart" 
+                className="flex items-center gap-2 px-2 py-2 border border-transparent hover:border-white rounded relative"
+              >
+                <div className="relative">
+                  <svg 
+                    className="w-10 h-10" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                  >
+                    <path 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round" 
+                      d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" 
+                    />
+                  </svg>
+                  {cartItemCount > 0 && (
+                    <span className="absolute -top-1 left-4 bg-[#f08804] text-white text-sm font-bold rounded-full w-5 h-5 flex items-center justify-center">
+                      {cartItemCount}
+                    </span>
+                  )}
+                </div>
+                <div className="text-sm font-bold">カート</div>
+              </Link>
+              
+              {/* カート追加通知の吹き出し */}
+              {showCartNotification && (
+                <div className="absolute top-full right-0 mt-2 bg-[#16a085] text-white px-4 py-2 rounded shadow-lg whitespace-nowrap animate-fade-in z-50">
+                  <div className="relative">
+                    {/* 吹き出しの三角形 */}
+                    <div className="absolute -top-3 right-4 w-0 h-0 border-l-8 border-r-8 border-b-8 border-transparent border-b-[#16a085]"></div>
+                    カートに商品が追加されました
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
