@@ -7,6 +7,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 declare global {
   interface Window {
     krt: (command: string, eventName: string, params?: any) => void;
+    __karte_initial_view_sent?: boolean;
   }
 }
 
@@ -16,12 +17,10 @@ function GTMPageViewContent() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // セッションストレージで初回ロードかどうかを判定
-      const hasInitialPageLoaded = sessionStorage.getItem('karte_initial_page_loaded');
-      
-      if (!hasInitialPageLoaded) {
-        // 初回ロード時
-        sessionStorage.setItem('karte_initial_page_loaded', 'true');
+      // グローバル変数で初回ロードかどうかを判定
+      if (!window.__karte_initial_view_sent) {
+        // 初回ロード時（計測タグが自動でviewを送信するため、ここでは送信しない）
+        window.__karte_initial_view_sent = true;
         console.log('[KARTE] Initial page load - view event handled by tracking tag');
         return;
       }
