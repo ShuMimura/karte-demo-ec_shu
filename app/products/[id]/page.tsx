@@ -43,13 +43,14 @@ export default function ProductDetailPage() {
     fetchProduct();
   }, [productId]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!product) return;
     
-    addToCart(product, quantity);
+    await addToCart(product, quantity);
     setAddedToCart(true);
     
-    setTimeout(() => setAddedToCart(false), 2000);
+    // カートページに遷移
+    router.push('/cart');
   };
 
   if (loading) {
