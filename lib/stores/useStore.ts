@@ -82,7 +82,7 @@ export const useStore = create<StoreState>((set, get) => ({
     }
   },
 
-  updateQuantity: (productId: string, quantity: number) => {
+  updateQuantity: async (productId: string, quantity: number) => {
     const { cart } = get();
     if (quantity <= 0) {
       get().removeFromCart(productId);
@@ -94,6 +94,10 @@ export const useStore = create<StoreState>((set, get) => ({
     );
     storage.set(CART_KEY, newCart);
     set({ cart: newCart });
+
+    // Track analytics - カート全体の情報を送信（数量変更時）
+    const allProducts = await productService.getProducts();
+    analyticsService.trackUpdateCart(newCart, allProducts);
   },
 
   clearCart: () => {
