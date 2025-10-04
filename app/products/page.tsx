@@ -58,7 +58,7 @@ function ProductsPageContent() {
       <div className="max-w-[1500px] mx-auto px-4 py-6">
         {/* Page Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-normal mb-4">
+          <h1 className="text-2xl font-normal mb-4 text-gray-900">
             {searchQuery ? `"${searchQuery}" の検索結果` : 'すべての商品'}
           </h1>
           
