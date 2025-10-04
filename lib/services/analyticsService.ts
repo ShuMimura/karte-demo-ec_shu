@@ -182,9 +182,41 @@ export class AnalyticsService {
     });
   }
 
-  trackViewCart(itemCount: number, total: number) {
-    // cart イベントで代替
-    console.log('[Analytics] View Cart (use cart event instead)');
+  // cart: カートページ閲覧時（カート状態全体を送信）
+  trackViewCart(allCartItems: CartItem[], allProducts: Product[]) {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    
+    // カート内の全商品情報
+    const items = allCartItems.map(cartItem => {
+      const prod = allProducts.find(p => p.id === cartItem.productId);
+      return {
+        item_id: cartItem.productId,
+        name: prod?.name || '',
+        price: prod?.price || 0,
+        quantity: cartItem.quantity,
+        item_url: `${baseUrl}/products/${cartItem.productId}`,
+        item_image_url: prod?.imageUrl || '',
+        l_category_name: prod?.category || ''
+      };
+    });
+
+    const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
+
+    this.pushToDataLayer('cart', {
+      price: totalPrice,
+      quantity: totalQuantity,
+      status: items.length > 0,
+      items: items,
+      added_item_id: null,
+      deleted_item_id: null,
+      item_ids: items.map(item => item.item_id),
+      item_names: items.map(item => item.name),
+      item_prices: items.map(item => item.price),
+      item_quantities: items.map(item => item.quantity),
+      item_urls: items.map(item => item.item_url),
+      item_image_urls: items.map(item => item.item_image_url)
+    });
   }
 
   trackBeginCheckout(items: CartItem[], total: number) {

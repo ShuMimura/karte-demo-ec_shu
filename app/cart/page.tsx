@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { CartItem, Product } from '@/lib/types';
 import { useStore } from '@/lib/stores/useStore';
 import { analyticsService } from '@/lib/services/analyticsService';
+import { productService } from '@/lib/services/productService';
 import Button from '../components/Button';
 
 export default function CartPage() {
@@ -31,9 +32,9 @@ export default function CartPage() {
     setCartItems(items);
     setTotal(totalAmount);
     
-    if (items.length > 0) {
-      analyticsService.trackViewCart(items.length, totalAmount);
-    }
+    // カート閲覧時にcartイベントを送信
+    const allProducts = await productService.getProducts();
+    analyticsService.trackViewCart(cart, allProducts);
     
     setLoading(false);
   };
