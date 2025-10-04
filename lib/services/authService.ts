@@ -65,6 +65,40 @@ export class AuthService {
     return userWithoutPassword;
   }
 
+  async updateUserAttributes(userId: string, attributes: { birthday?: string; age?: number; gender?: 'male' | 'female' | 'other' }): Promise<User> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    // Get existing users
+    const users: StoredUser[] = storage.get(USERS_KEY) || [];
+    
+    // Find and update user
+    const userIndex = users.findIndex(u => u.id === userId);
+    if (userIndex === -1) {
+      throw new Error('ユーザーが見つかりません');
+    }
+
+    // Update attributes
+    users[userIndex] = {
+      ...users[userIndex],
+      ...attributes
+    };
+
+    // Save updated users
+    storage.set(USERS_KEY, users);
+
+    // Update current user in storage
+    const currentUser = this.getCurrentUser();
+    if (currentUser && currentUser.id === userId) {
+      const updatedUser = { ...currentUser, ...attributes };
+      storage.set(CURRENT_USER_KEY, updatedUser);
+      return updatedUser;
+    }
+
+    const { password: _, ...userWithoutPassword } = users[userIndex];
+    return userWithoutPassword;
+  }
+
   logout(): void {
     storage.remove(CURRENT_USER_KEY);
   }

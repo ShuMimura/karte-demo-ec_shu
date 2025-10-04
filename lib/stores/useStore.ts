@@ -31,6 +31,7 @@ interface StoreState {
   register: (email: string, password: string, name: string) => Promise<void>;
   logout: () => void;
   checkAuth: () => void;
+  updateUserAttributes: (attributes: { birthday?: string; age?: number; gender?: 'male' | 'female' | 'other' }) => Promise<void>;
   
   // Utility actions
   setLoading: (loading: boolean) => void;
@@ -168,6 +169,25 @@ export const useStore = create<StoreState>((set, get) => ({
   checkAuth: () => {
     const user = authService.getCurrentUser();
     set({ user });
+  },
+
+  updateUserAttributes: async (attributes: { birthday?: string; age?: number; gender?: 'male' | 'female' | 'other' }) => {
+    const { user } = get();
+    if (!user) {
+      throw new Error('ログインしてください');
+    }
+
+    set({ isLoading: true, error: null });
+    try {
+      const updatedUser = await authService.updateUserAttributes(user.id, attributes);
+      set({ user: updatedUser, isLoading: false });
+      
+      // attributeイベントを送信
+      analyticsService.trackAttribute(updatedUser.id, updatedUser.birthday, updatedUser.age, updatedUser.gender);
+    } catch (error) {
+      set({ error: (error as Error).message, isLoading: false });
+      throw error;
+    }
   },
 
   // Utility actions
