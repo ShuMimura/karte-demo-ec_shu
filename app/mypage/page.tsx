@@ -127,7 +127,7 @@ export default function MyPage() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-semibold flex items-center gap-2 text-gray-900">
               <span>📝</span>
-              属性情報
+              プロフィール
             </h2>
             {!isEditing && (
               <Button onClick={() => setIsEditing(true)} variant="secondary" className="text-sm">
