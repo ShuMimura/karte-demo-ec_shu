@@ -85,8 +85,9 @@ export default function MyPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-4xl font-bold mb-8 text-gray-900">マイページ</h1>
+    <div className="min-h-screen bg-[#eaeded] py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="text-4xl font-bold mb-8 text-gray-900">マイページ</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* User Info Card */}
@@ -245,6 +246,7 @@ export default function MyPage() {
           KARTE Demo ECサイトをご利用いただきありがとうございます。
           このサイトではKARTEの各種機能を検証することができます。
         </p>
+      </div>
       </div>
     </div>
   );

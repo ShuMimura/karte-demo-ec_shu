@@ -58,32 +58,33 @@ function CheckoutCompleteContent() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="text-center">
-        {/* Success Icon */}
-        <div className="mb-6">
-          <div className="inline-flex items-center justify-center w-24 h-24 bg-green-100 rounded-full">
-            <svg 
-              className="w-12 h-12 text-green-600" 
-              fill="none" 
-              stroke="currentColor" 
-              viewBox="0 0 24 24"
-            >
-              <path 
-                strokeLinecap="round" 
-                strokeLinejoin="round" 
-                strokeWidth={2} 
-                d="M5 13l4 4L19 7" 
-              />
-            </svg>
+    <div className="min-h-screen bg-[#eaeded] py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center">
+          {/* Success Icon */}
+          <div className="mb-6">
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-green-100 rounded-full">
+              <svg 
+                className="w-12 h-12 text-green-600" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M5 13l4 4L19 7" 
+                />
+              </svg>
+            </div>
           </div>
-        </div>
 
-        <h1 className="text-4xl font-bold mb-4 text-gray-900">購入が完了しました！</h1>
-        
-        <p className="text-white mb-2">
-          ご注文ありがとうございます
-        </p>
+          <h1 className="text-4xl font-bold mb-4 text-gray-900">購入が完了しました！</h1>
+          
+          <p className="text-gray-900 mb-2">
+            ご注文ありがとうございます
+          </p>
         
         <div className="inline-block bg-gray-100 px-6 py-3 rounded-lg mb-8">
           <p className="text-sm text-gray-600">注文番号</p>
@@ -121,6 +122,7 @@ function CheckoutCompleteContent() {
           >
             買い物を続ける
           </Button>
+        </div>
         </div>
       </div>
     </div>

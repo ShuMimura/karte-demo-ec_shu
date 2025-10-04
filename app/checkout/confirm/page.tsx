@@ -74,8 +74,9 @@ export default function CheckoutConfirmPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-4xl font-bold mb-8">購入確認</h1>
+    <div className="min-h-screen bg-[#eaeded] py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="text-4xl font-bold mb-8 text-gray-900">購入確認</h1>
 
       {/* Order Summary */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -143,6 +144,7 @@ export default function CheckoutConfirmPage() {
         >
           {processing ? '処理中...' : '購入を確定する'}
         </Button>
+      </div>
       </div>
     </div>
   );
