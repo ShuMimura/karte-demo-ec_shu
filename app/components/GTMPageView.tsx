@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { useStore } from '@/lib/stores/useStore';
+import { analyticsService } from '@/lib/services/analyticsService';
 
 // 型定義
 declare global {
@@ -14,6 +16,7 @@ declare global {
 function GTMPageViewContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const user = useStore(state => state.user);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -22,6 +25,11 @@ function GTMPageViewContent() {
         // 初回ロード時（計測タグが自動でviewを送信するため、ここでは送信しない）
         window.__karte_initial_view_sent = true;
         console.log('[KARTE] Initial page load - view event handled by tracking tag');
+        
+        // ログイン状態の場合、identifyイベントを送信
+        if (user) {
+          analyticsService.trackIdentify(user.id, user.name, user.email);
+        }
         return;
       }
       
@@ -40,8 +48,13 @@ function GTMPageViewContent() {
         window.krt('send', 'view');
         console.log('[KARTE] View event sent:', pathname);
       }
+      
+      // ログイン状態の場合、identifyイベントを送信
+      if (user) {
+        analyticsService.trackIdentify(user.id, user.name, user.email);
+      }
     }
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams, user]);
 
   return null;
 }
