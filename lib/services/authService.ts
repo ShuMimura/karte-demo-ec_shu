@@ -21,13 +21,16 @@ export class AuthService {
       throw new Error('このメールアドレスは既に登録されています');
     }
 
-    // Create new user
+    // Create new user (with default attribute values)
     const newUser: StoredUser = {
       id: `user_${Date.now()}`,
       email,
       password, // In real app, this should be hashed
       name,
-      createdAt: new Date()
+      createdAt: new Date(),
+      birthday: '1994-04-13', // デフォルト値
+      age: 31, // デフォルト値
+      gender: 'male' // デフォルト値
     };
 
     // Save user

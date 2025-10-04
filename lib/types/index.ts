@@ -27,6 +27,9 @@ export interface User {
   email: string;
   name: string;
   createdAt: Date;
+  birthday?: string; // YYYY-MM-DD
+  age?: number;
+  gender?: 'male' | 'female' | 'other';
 }
 
 // Analytics Types

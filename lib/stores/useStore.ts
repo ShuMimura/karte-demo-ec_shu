@@ -152,8 +152,8 @@ export const useStore = create<StoreState>((set, get) => ({
     try {
       const user = await authService.register(email, password, name);
       set({ user, isLoading: false });
-      // identifyイベントとsignupイベントを送信
-      analyticsService.trackRegister(user.id, name, email);
+      // identifyイベント、attributeイベント、signupイベントを送信
+      analyticsService.trackRegister(user.id, name, email, user.birthday, user.age, user.gender);
     } catch (error) {
       set({ error: (error as Error).message, isLoading: false });
       throw error;

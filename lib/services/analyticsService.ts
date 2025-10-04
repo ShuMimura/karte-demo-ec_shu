@@ -157,6 +157,19 @@ export class AnalyticsService {
     });
   }
 
+  // attribute: ユーザー属性情報送信
+  trackAttribute(userId: string, birthday?: string, age?: number, gender?: string) {
+    const attributes: any = {
+      user_id: userId
+    };
+    
+    if (birthday) attributes.birthday = birthday;
+    if (age !== undefined) attributes.age = age;
+    if (gender) attributes.gender = gender;
+    
+    this.pushToDataLayer('attribute', attributes);
+  }
+
   // login: ログイン時（カスタムイベント）
   trackLogin(userId: string, userName: string, email: string) {
     // identifyイベントを送信
@@ -169,9 +182,12 @@ export class AnalyticsService {
   }
 
   // signup: 会員登録完了時
-  trackRegister(userId: string, userName: string, email: string) {
+  trackRegister(userId: string, userName: string, email: string, birthday?: string, age?: number, gender?: string) {
     // identifyイベントを送信
     this.trackIdentify(userId, userName, email);
+    
+    // attributeイベントを送信
+    this.trackAttribute(userId, birthday, age, gender);
     
     // signupカスタムイベントを送信
     this.pushToDataLayer('signup', {
