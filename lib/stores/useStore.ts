@@ -17,7 +17,6 @@ interface StoreState {
   // UI state
   isLoading: boolean;
   error: string | null;
-  showCartNotification: boolean;
   
   // Cart actions
   addToCart: (product: Product, quantity: number) => Promise<void>;
@@ -37,7 +36,6 @@ interface StoreState {
   // Utility actions
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
-  hideCartNotification: () => void;
 }
 
 export const useStore = create<StoreState>((set, get) => ({
@@ -46,13 +44,11 @@ export const useStore = create<StoreState>((set, get) => ({
   user: null,
   isLoading: false,
   error: null,
-  showCartNotification: false,
 
   // Cart actions
   addToCart: async (product: Product, quantity: number) => {
     const { cart } = get();
     const existingItem = cart.find(item => item.productId === product.id);
-    const isFirstItem = cart.length === 0;
 
     let newCart: CartItem[];
     if (existingItem) {
@@ -67,11 +63,6 @@ export const useStore = create<StoreState>((set, get) => ({
 
     storage.set(CART_KEY, newCart);
     set({ cart: newCart });
-
-    // カートが空の状態から初めて追加された場合のみ通知を表示
-    if (isFirstItem) {
-      set({ showCartNotification: true });
-    }
 
     // Track analytics - カート全体の情報を送信
     const allProducts = await productService.getProducts();
@@ -202,7 +193,6 @@ export const useStore = create<StoreState>((set, get) => ({
   // Utility actions
   setLoading: (loading: boolean) => set({ isLoading: loading }),
   setError: (error: string | null) => set({ error }),
-  hideCartNotification: () => set({ showCartNotification: false }),
 }));
 
 

@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { Product } from '@/lib/types';
 import { useStore } from '@/lib/stores/useStore';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 interface ProductCardProps {
   product: Product;
@@ -11,14 +11,9 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
-  const { addToCart, cart } = useStore();
-  const [isAddedToCart, setIsAddedToCart] = useState(false);
-
-  // カートに追加済みかどうかをチェック
-  useEffect(() => {
-    const inCart = cart.some(item => item.productId === product.id);
-    setIsAddedToCart(inCart);
-  }, [cart, product.id]);
+  const { addToCart } = useStore();
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [showAddedMessage, setShowAddedMessage] = useState(false);
 
   const handleCardClick = (e: React.MouseEvent) => {
     // ボタンのクリックでない場合のみ詳細ページに遷移
@@ -29,9 +24,17 @@ export default function ProductCard({ product }: ProductCardProps) {
     e.preventDefault();
     e.stopPropagation();
     
-    if (isAddedToCart) return; // 既にカートに追加済みなら何もしない
+    if (isAddingToCart) return; // 処理中なら何もしない
+    
+    setIsAddingToCart(true);
+    setShowAddedMessage(true);
     
     await addToCart(product, 1);
+    
+    // 2秒後にボタンを元に戻す
+    setTimeout(() => {
+      setIsAddingToCart(false);
+    }, 2000);
   };
 
   return (
@@ -66,17 +69,29 @@ export default function ProductCard({ product }: ProductCardProps) {
         </p>
         
         {product.stock > 0 && (
-          <button 
-            onClick={handleAddToCart}
-            disabled={isAddedToCart}
-            className={`mt-auto text-xs py-1.5 px-3 rounded-full font-medium transition shadow-sm ${
-              isAddedToCart
-                ? 'bg-gray-400 text-gray-100 cursor-not-allowed'
-                : 'bg-[#16a085] hover:bg-[#138d75] text-white'
-            }`}
-          >
-            {isAddedToCart ? 'カートに追加済み' : 'カートに入れる'}
-          </button>
+          <div className="mt-auto relative">
+            {/* カート追加メッセージ */}
+            {showAddedMessage && (
+              <div className="absolute -top-8 left-0 right-0 flex items-center justify-center gap-1 text-green-700 text-xs font-medium animate-fade-in">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                カートに追加されました
+              </div>
+            )}
+            
+            <button 
+              onClick={handleAddToCart}
+              disabled={isAddingToCart}
+              className={`w-full text-xs py-1.5 px-3 rounded-full font-medium transition shadow-sm ${
+                isAddingToCart
+                  ? 'bg-gray-400 text-gray-100 cursor-not-allowed'
+                  : 'bg-[#16a085] hover:bg-[#138d75] text-white'
+              }`}
+            >
+              カートに入れる
+            </button>
+          </div>
         )}
       </div>
     </div>
