@@ -345,6 +345,39 @@ export class AnalyticsService {
       l_category_names: items.map(item => item.l_category_name)
     });
   }
+
+  // favorite: お気に入りページ閲覧時（お気に入り全体の状態を送信）
+  trackViewFavorites(allFavoriteProducts: Product[]) {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    
+    // お気に入り商品の配列情報
+    const items = allFavoriteProducts.map(product => ({
+      item_id: product.id,
+      name: product.name,
+      price: product.price,
+      item_url: `${baseUrl}/products/${product.id}`,
+      item_image_url: product.imageUrl,
+      l_category_name: product.category
+    }));
+
+    const totalPrice = allFavoriteProducts.reduce((sum, p) => sum + p.price, 0);
+    const totalQuantity = allFavoriteProducts.length;
+
+    this.pushToDataLayer('favorite', {
+      price: totalPrice,
+      quantity: totalQuantity,
+      status: totalQuantity > 0,
+      added_item_id: null,
+      deleted_item_id: null,
+      items: items,
+      item_ids: items.map(item => item.item_id),
+      item_names: items.map(item => item.name),
+      item_prices: items.map(item => item.price),
+      item_urls: items.map(item => item.item_url),
+      item_image_urls: items.map(item => item.item_image_url),
+      l_category_names: items.map(item => item.l_category_name)
+    });
+  }
 }
 
 // Singleton instance

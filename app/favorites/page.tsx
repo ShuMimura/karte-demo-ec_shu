@@ -24,6 +24,9 @@ export default function FavoritesPage() {
     const items = await getFavoriteItems();
     setFavoriteItems(items);
     setLoading(false);
+    
+    // お気に入りページ閲覧時にfavoriteイベントを送信
+    analyticsService.trackViewFavorites(items);
   };
 
   const handleRemove = async (productId: string) => {
