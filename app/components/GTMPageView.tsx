@@ -16,19 +16,27 @@ function GTMPageViewContent() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // GTMにページビューイベントを送信
-      if (window.dataLayer) {
-        window.dataLayer.push({
-          event: 'pageview',
-          page: pathname + (searchParams.toString() ? `?${searchParams.toString()}` : ''),
-        });
-        console.log('[GTM] Page view:', pathname);
-      }
+      // 初回ロードかどうかを判定
+      // 初回ロード時は計測タグが自動でviewイベントを送信するので、ここでは送信しない
+      const isInitialLoad = !window.history.state || window.history.state.idx === 0;
       
-      // KARTEにviewイベントを送信（SPA対応）
-      if (typeof window.krt !== 'undefined') {
-        window.krt('send', 'view');
-        console.log('[KARTE] View event sent:', pathname);
+      if (!isInitialLoad) {
+        // GTMにページビューイベントを送信
+        if (window.dataLayer) {
+          window.dataLayer.push({
+            event: 'pageview',
+            page: pathname + (searchParams.toString() ? `?${searchParams.toString()}` : ''),
+          });
+          console.log('[GTM] Page view:', pathname);
+        }
+        
+        // KARTEにviewイベントを送信（SPA対応）
+        if (typeof window.krt !== 'undefined') {
+          window.krt('send', 'view');
+          console.log('[KARTE] View event sent:', pathname);
+        }
+      } else {
+        console.log('[KARTE] Initial load - view event handled by tracking tag');
       }
     }
   }, [pathname, searchParams]);
