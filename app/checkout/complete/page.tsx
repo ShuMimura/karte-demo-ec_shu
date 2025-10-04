@@ -3,6 +3,7 @@
 import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { analyticsService } from '@/lib/services/analyticsService';
+import { productService } from '@/lib/services/productService';
 import Button from '@/app/components/Button';
 
 function CheckoutCompleteContent() {
@@ -14,6 +15,29 @@ function CheckoutCompleteContent() {
     analyticsService.trackPageView('checkout_complete', {
       order_id: orderId || undefined
     });
+
+    // 購入イベントを送信
+    const sendPurchaseEvent = async () => {
+      const lastPurchaseStr = localStorage.getItem('lastPurchase');
+      if (lastPurchaseStr) {
+        try {
+          const purchaseData = JSON.parse(lastPurchaseStr);
+          
+          // 注文IDが一致する場合のみイベント送信（重複防止）
+          if (purchaseData.orderId === orderId) {
+            const allProducts = await productService.getProducts();
+            analyticsService.trackPurchase(purchaseData.items, allProducts, purchaseData.total);
+            
+            // イベント送信後、LocalStorageから削除（重複防止）
+            localStorage.removeItem('lastPurchase');
+          }
+        } catch (e) {
+          console.error('Failed to send purchase event:', e);
+        }
+      }
+    };
+
+    sendPurchaseEvent();
   }, [orderId]);
 
   if (!orderId) {
