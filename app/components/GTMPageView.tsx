@@ -13,14 +13,16 @@ declare global {
 function GTMPageViewContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const isFirstRender = useRef(true);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // 初回レンダリング時はスキップ（計測タグが自動でviewイベントを送信するため）
-      if (isFirstRender.current) {
-        isFirstRender.current = false;
-        console.log('[KARTE] Initial render - view event handled by tracking tag');
+      // セッションストレージで初回ロードかどうかを判定
+      const hasInitialPageLoaded = sessionStorage.getItem('karte_initial_page_loaded');
+      
+      if (!hasInitialPageLoaded) {
+        // 初回ロード時
+        sessionStorage.setItem('karte_initial_page_loaded', 'true');
+        console.log('[KARTE] Initial page load - view event handled by tracking tag');
         return;
       }
       
