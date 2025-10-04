@@ -6,10 +6,19 @@ import { authService } from '../services/authService';
 import { analyticsService } from '../services/analyticsService';
 
 const CART_KEY = 'karte_demo_cart';
+const FAVORITES_KEY = 'karte_demo_favorites';
+
+interface FavoriteItem {
+  productId: string;
+  addedAt: Date;
+}
 
 interface StoreState {
   // Cart state
   cart: CartItem[];
+  
+  // Favorites state
+  favorites: FavoriteItem[];
   
   // User state
   user: User | null;
@@ -26,6 +35,12 @@ interface StoreState {
   getCartTotal: () => Promise<number>;
   getCartItems: () => Promise<Array<CartItem & { product: Product }>>;
   
+  // Favorites actions
+  addToFavorites: (product: Product) => Promise<void>;
+  removeFromFavorites: (productId: string) => Promise<void>;
+  isFavorite: (productId: string) => boolean;
+  getFavoriteItems: () => Promise<Product[]>;
+  
   // Auth actions
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
@@ -41,6 +56,7 @@ interface StoreState {
 export const useStore = create<StoreState>((set, get) => ({
   // Initial state
   cart: storage.get<CartItem[]>(CART_KEY) || [],
+  favorites: storage.get<FavoriteItem[]>(FAVORITES_KEY) || [],
   user: null,
   isLoading: false,
   error: null,
@@ -128,6 +144,53 @@ export const useStore = create<StoreState>((set, get) => ({
       const product = await productService.getProduct(item.productId);
       if (product) {
         items.push({ ...item, product });
+      }
+    }
+
+    return items;
+  },
+
+  // Favorites actions
+  addToFavorites: async (product: Product) => {
+    const { favorites } = get();
+    const existingItem = favorites.find(item => item.productId === product.id);
+
+    if (!existingItem) {
+      const newFavorites = [...favorites, { productId: product.id, addedAt: new Date() }];
+      storage.set(FAVORITES_KEY, newFavorites);
+      set({ favorites: newFavorites });
+
+      // Track analytics
+      analyticsService.trackAddToFavorites(product);
+    }
+  },
+
+  removeFromFavorites: async (productId: string) => {
+    const { favorites } = get();
+    const product = await productService.getProduct(productId);
+    const newFavorites = favorites.filter(item => item.productId !== productId);
+    storage.set(FAVORITES_KEY, newFavorites);
+    set({ favorites: newFavorites });
+
+    // Track analytics
+    if (product) {
+      analyticsService.trackRemoveFromFavorites(product);
+    }
+  },
+
+  isFavorite: (productId: string) => {
+    const { favorites } = get();
+    return favorites.some(item => item.productId === productId);
+  },
+
+  getFavoriteItems: async () => {
+    const { favorites } = get();
+    const items: Product[] = [];
+
+    for (const item of favorites) {
+      const product = await productService.getProduct(item.productId);
+      if (product) {
+        items.push(product);
       }
     }
 

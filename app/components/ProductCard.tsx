@@ -11,9 +11,10 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
   const router = useRouter();
-  const { addToCart } = useStore();
+  const { addToCart, addToFavorites, removeFromFavorites, isFavorite } = useStore();
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [showAddedMessage, setShowAddedMessage] = useState(false);
+  const favorite = isFavorite(product.id);
 
   const handleCardClick = (e: React.MouseEvent) => {
     // ボタンのクリックでない場合のみ詳細ページに遷移
@@ -37,11 +38,42 @@ export default function ProductCard({ product }: ProductCardProps) {
     }, 2000);
   };
 
+  const handleToggleFavorite = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (favorite) {
+      await removeFromFavorites(product.id);
+    } else {
+      await addToFavorites(product);
+    }
+  };
+
   return (
     <div 
       onClick={handleCardClick}
-      className="bg-white rounded border border-gray-200 hover:shadow-lg transition-shadow duration-200 cursor-pointer h-full flex flex-col p-4"
+      className="bg-white rounded border border-gray-200 hover:shadow-lg transition-shadow duration-200 cursor-pointer h-full flex flex-col p-4 relative"
     >
+      {/* お気に入りボタン */}
+      <button
+        onClick={handleToggleFavorite}
+        className="absolute top-2 right-2 p-2 rounded-full bg-white/80 hover:bg-white shadow-sm transition z-10"
+        aria-label={favorite ? 'お気に入りから削除' : 'お気に入りに追加'}
+      >
+        <svg
+          className={`w-5 h-5 transition ${favorite ? 'fill-red-500 text-red-500' : 'fill-none text-gray-400'}`}
+          stroke="currentColor"
+          strokeWidth={2}
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+          />
+        </svg>
+      </button>
+      
       <div className="aspect-square bg-white flex items-center justify-center mb-3">
         <div className="text-gray-400 text-8xl">📦</div>
       </div>

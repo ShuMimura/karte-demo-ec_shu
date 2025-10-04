@@ -279,6 +279,34 @@ export class AnalyticsService {
     // cart イベントで代替
     console.log('[Analytics] Begin Checkout (use cart event instead)');
   }
+
+  // favorite: お気に入り追加時（カスタムイベント）
+  trackAddToFavorites(product: Product) {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    this.pushToDataLayer('favorite', {
+      action: 'add',
+      item_id: product.id,
+      name: product.name,
+      price: product.price,
+      item_url: `${baseUrl}/products/${product.id}`,
+      item_image_url: product.imageUrl,
+      l_category_name: product.category
+    });
+  }
+
+  // favorite: お気に入り削除時（カスタムイベント）
+  trackRemoveFromFavorites(product: Product) {
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    this.pushToDataLayer('favorite', {
+      action: 'remove',
+      item_id: product.id,
+      name: product.name,
+      price: product.price,
+      item_url: `${baseUrl}/products/${product.id}`,
+      item_image_url: product.imageUrl,
+      l_category_name: product.category
+    });
+  }
 }
 
 // Singleton instance
