@@ -79,20 +79,20 @@ function CheckoutCompleteContent() {
           </div>
         </div>
 
-        <h1 className="text-4xl font-bold mb-4">購入が完了しました！</h1>
+        <h1 className="text-4xl font-bold mb-4 text-gray-900">購入が完了しました！</h1>
         
-        <p className="text-gray-600 mb-2">
+        <p className="text-white mb-2">
           ご注文ありがとうございます
         </p>
         
         <div className="inline-block bg-gray-100 px-6 py-3 rounded-lg mb-8">
           <p className="text-sm text-gray-600">注文番号</p>
-          <p className="font-mono text-lg font-semibold">{orderId}</p>
+          <p className="font-mono text-lg font-semibold text-gray-900">{orderId}</p>
         </div>
 
         {/* Order Details Box */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8 text-left max-w-2xl mx-auto">
-          <h2 className="font-semibold text-lg mb-3">📧 次のステップ</h2>
+          <h2 className="font-semibold text-lg mb-3 text-gray-900">📧 次のステップ</h2>
           <ul className="space-y-2 text-gray-700">
             <li>✓ 注文確認メールを送信しました（デモ）</li>
             <li>✓ 商品の発送準備を開始します（デモ）</li>

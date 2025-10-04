@@ -93,7 +93,7 @@ function ProductsPageContent() {
         {!loading && products.length === 0 && (
           <div className="text-center py-12 bg-white rounded">
             <div className="text-6xl mb-4">🔍</div>
-            <h2 className="text-2xl font-normal mb-2">該当商品がありません</h2>
+            <h2 className="text-2xl font-normal mb-2 text-gray-900">該当商品がありません</h2>
             <p className="text-gray-600 mb-6 text-sm">
               {searchQuery 
                 ? '別のキーワードで検索してみてください'

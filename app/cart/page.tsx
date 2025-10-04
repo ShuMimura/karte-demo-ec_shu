@@ -79,7 +79,7 @@ export default function CartPage() {
         <div className="max-w-[1500px] mx-auto px-4">
           <div className="text-center bg-white rounded p-12">
             <div className="text-6xl mb-4">🛒</div>
-            <h1 className="text-3xl font-normal mb-4">カートは空です</h1>
+            <h1 className="text-3xl font-normal mb-4 text-gray-900">カートは空です</h1>
             <p className="text-gray-600 mb-6">
               商品を追加してショッピングを始めましょう
             </p>
@@ -95,7 +95,7 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-[#eaeded] py-6">
       <div className="max-w-[1500px] mx-auto px-4">
-        <h1 className="text-2xl font-normal mb-6">ショッピングカート</h1>
+        <h1 className="text-2xl font-normal mb-6 text-gray-900">ショッピングカート</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
           {/* Cart Items */}
@@ -113,7 +113,7 @@ export default function CartPage() {
                   <h3 className="text-lg font-normal mb-1">
                     <a 
                       href={`/products/${item.product.id}`}
-                      className="hover:text-[#c45500] hover:underline"
+                      className="text-gray-900 hover:text-[#c45500] hover:underline"
                     >
                       {item.product.name}
                     </a>
@@ -129,7 +129,7 @@ export default function CartPage() {
                     <select
                       value={item.quantity}
                       onChange={(e) => handleQuantityChange(item.productId, parseInt(e.target.value))}
-                      className="px-3 py-1 border border-gray-300 rounded text-sm bg-white hover:bg-gray-50"
+                      className="px-3 py-1 border border-gray-300 rounded text-sm text-gray-900 bg-white hover:bg-gray-50"
                       disabled={item.product.stock === 0}
                     >
                       {[...Array(Math.min(10, item.product.stock))].map((_, i) => (

@@ -79,19 +79,19 @@ export default function CheckoutConfirmPage() {
 
       {/* Order Summary */}
       <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h2 className="text-2xl font-semibold mb-6">注文内容</h2>
+        <h2 className="text-2xl font-semibold mb-6 text-gray-900">注文内容</h2>
         
         <div className="space-y-4 mb-6">
           {cartItems.map(item => (
             <div key={item.productId} className="flex justify-between items-center py-3 border-b">
               <div className="flex-1">
-                <h3 className="font-medium">{item.product.name}</h3>
+                <h3 className="font-medium text-gray-900">{item.product.name}</h3>
                 <p className="text-sm text-gray-600">
                   数量: {item.quantity} × ¥{item.product.price.toLocaleString()}
                 </p>
               </div>
               <div className="text-right">
-                <p className="font-semibold">
+                <p className="font-semibold text-gray-900">
                   ¥{(item.product.price * item.quantity).toLocaleString()}
                 </p>
               </div>
@@ -112,7 +112,7 @@ export default function CheckoutConfirmPage() {
             <span>送料</span>
             <span>無料</span>
           </div>
-          <div className="flex justify-between text-2xl font-bold pt-4 border-t">
+          <div className="flex justify-between text-2xl font-bold pt-4 border-t text-gray-900">
             <span>合計</span>
             <span className="text-blue-600">¥{total.toLocaleString()}</span>
           </div>

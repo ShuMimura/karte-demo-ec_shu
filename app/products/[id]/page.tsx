@@ -109,7 +109,7 @@ export default function ProductDetailPage() {
           {/* Product Info */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded p-6 mb-4">
-              <h1 className="text-2xl font-normal mb-4">{product.name}</h1>
+              <h1 className="text-2xl font-normal mb-4 text-gray-900">{product.name}</h1>
               
               <div className="border-b border-gray-200 pb-4 mb-4">
                 <div className="flex items-baseline gap-2 mb-2">
@@ -128,7 +128,7 @@ export default function ProductDetailPage() {
               <div className="space-y-2 text-sm mb-6">
                 <div className="flex items-center gap-2">
                   <span className="text-gray-600">カテゴリー:</span>
-                  <span className="font-medium">
+                  <span className="font-medium text-gray-900">
                     {product.category === 'electronics' ? '電子機器' : 'アクセサリー'}
                   </span>
                 </div>
@@ -156,11 +156,11 @@ export default function ProductDetailPage() {
               )}
 
               <div className="flex items-center gap-3 mb-4">
-                <label className="text-sm text-gray-700">数量:</label>
+                <label className="text-sm text-gray-900 font-medium">数量:</label>
                 <select
                   value={quantity}
                   onChange={(e) => setQuantity(parseInt(e.target.value))}
-                  className="px-3 py-2 border border-gray-300 rounded text-sm bg-white hover:bg-gray-50 cursor-pointer"
+                  className="px-3 py-2 border border-gray-300 rounded text-sm text-gray-900 bg-white hover:bg-gray-50 cursor-pointer"
                   disabled={product.stock === 0}
                 >
                   {[...Array(Math.min(10, product.stock))].map((_, i) => (
