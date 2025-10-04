@@ -15,26 +15,32 @@ export default function CartPage() {
   const [cartItems, setCartItems] = useState<Array<CartItem & { product: Product }>>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   useEffect(() => {
     analyticsService.trackPageView('cart');
-    loadCart();
+    loadCart(true); // 初回ロードフラグをtrueで呼び出し
   }, []);
 
   useEffect(() => {
-    loadCart();
-  }, [cart]);
+    if (!isInitialLoad) {
+      loadCart(false); // 2回目以降はcartイベントを送信しない
+    }
+  }, [cart, isInitialLoad]);
 
-  const loadCart = async () => {
+  const loadCart = async (shouldTrackCart: boolean = false) => {
     setLoading(true);
     const items = await getCartItems();
     const totalAmount = await getCartTotal();
     setCartItems(items);
     setTotal(totalAmount);
     
-    // カート閲覧時にcartイベントを送信
-    const allProducts = await productService.getProducts();
-    analyticsService.trackViewCart(cart, allProducts);
+    // カート閲覧時にcartイベントを送信（初回ロード時のみ）
+    if (shouldTrackCart) {
+      const allProducts = await productService.getProducts();
+      analyticsService.trackViewCart(cart, allProducts);
+      setIsInitialLoad(false);
+    }
     
     setLoading(false);
   };
