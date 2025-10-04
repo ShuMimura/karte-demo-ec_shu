@@ -28,6 +28,14 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
+        {/* KARTE Tracking Tag (SPA) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `!function(n){if(!window[n]){var o=window[n]=function(){var n=[].slice.call(arguments);return o.x?o.x.apply(0,n):o.q.push(n)};o.q=[],o.i=Date.now(),o.allow=function(){o.o="allow"},o.deny=function(){o.o="deny"}}}("krt")`,
+          }}
+        />
+        <script async src="https://cdn-edge.karte.io/b847d21b99d93487b09b2647e0780f0d/edge.js"></script>
+        {/* End KARTE Tracking Tag */}
         {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{
