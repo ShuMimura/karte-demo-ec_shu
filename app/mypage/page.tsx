@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useStore } from '@/lib/stores/useStore';
 import { analyticsService } from '@/lib/services/analyticsService';
@@ -9,19 +9,27 @@ import Button from '../components/Button';
 export default function MyPage() {
   const router = useRouter();
   const { user, logout, checkAuth } = useStore();
+  const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    checkAuth();
+    const check = async () => {
+      checkAuth();
+      setIsChecking(false);
+    };
+    check();
   }, [checkAuth]);
 
   useEffect(() => {
+    // checkAuthが完了するまで待つ
+    if (isChecking) return;
+    
     if (user) {
       analyticsService.trackPageView('mypage', { user_id: user.id });
     } else {
       // Not logged in, redirect to login
       router.push('/auth/login');
     }
-  }, [user, router]);
+  }, [user, router, isChecking]);
 
   const handleLogout = () => {
     logout();
