@@ -132,11 +132,8 @@ export class AnalyticsService {
       };
     });
 
-    const totalQuantity = items.reduce((sum, item) => sum + item.quantity, 0);
-
     this.pushToDataLayer('buy', {
-      price: total,
-      quantity: totalQuantity,
+      revenue: total,
       items: purchaseItems
     });
   }
