@@ -160,8 +160,13 @@ export const useStore = create<StoreState>((set, get) => ({
       storage.set(FAVORITES_KEY, newFavorites);
       set({ favorites: newFavorites });
 
-      // Track analytics
-      analyticsService.trackAddToFavorites(product);
+      // Track analytics - お気に入り全体の状態を送信
+      const allFavoriteProducts: Product[] = [];
+      for (const fav of newFavorites) {
+        const prod = await productService.getProduct(fav.productId);
+        if (prod) allFavoriteProducts.push(prod);
+      }
+      analyticsService.trackAddToFavorites(product, allFavoriteProducts);
     }
   },
 
@@ -172,9 +177,14 @@ export const useStore = create<StoreState>((set, get) => ({
     storage.set(FAVORITES_KEY, newFavorites);
     set({ favorites: newFavorites });
 
-    // Track analytics
+    // Track analytics - お気に入り全体の状態を送信
     if (product) {
-      analyticsService.trackRemoveFromFavorites(product);
+      const allFavoriteProducts: Product[] = [];
+      for (const fav of newFavorites) {
+        const prod = await productService.getProduct(fav.productId);
+        if (prod) allFavoriteProducts.push(prod);
+      }
+      analyticsService.trackRemoveFromFavorites(product, allFavoriteProducts);
     }
   },
 
