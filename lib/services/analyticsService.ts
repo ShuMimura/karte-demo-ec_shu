@@ -148,14 +148,34 @@ export class AnalyticsService {
     });
   }
 
-  // login: ログイン時
-  trackLogin(userId: string) {
-    this.pushToDataLayer('login', {});
+  // identify: ユーザー情報送信（ログイン時、情報更新時）
+  trackIdentify(userId: string, userName: string, email: string) {
+    this.pushToDataLayer('identify', {
+      user_id: userId,
+      name: userName,
+      email: email
+    });
+  }
+
+  // login: ログイン時（カスタムイベント）
+  trackLogin(userId: string, userName: string, email: string) {
+    // identifyイベントを送信
+    this.trackIdentify(userId, userName, email);
+    
+    // loginカスタムイベントを送信（ログイン回数カウント用など）
+    this.pushToDataLayer('login', {
+      user_id: userId
+    });
   }
 
   // signup: 会員登録完了時
   trackRegister(userId: string, userName: string, email: string) {
+    // identifyイベントを送信
+    this.trackIdentify(userId, userName, email);
+    
+    // signupカスタムイベントを送信
     this.pushToDataLayer('signup', {
+      user_id: userId,
       name: userName,
       email: email,
       signup_date: new Date().toISOString().split('T')[0] // YYYY-MM-DD
