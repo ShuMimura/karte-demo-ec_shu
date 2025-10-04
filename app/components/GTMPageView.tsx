@@ -26,10 +26,11 @@ function GTMPageViewContent() {
         window.__karte_initial_view_sent = true;
         console.log('[KARTE] Initial page load - view event handled by tracking tag');
         
-        // ログイン状態の場合、identifyイベントを送信
+        // ログイン状態の場合、identifyイベントとattributeイベントを送信
         if (user) {
-          console.log('[DEBUG] Initial load - Sending identify for user:', user.id);
+          console.log('[DEBUG] Initial load - Sending identify and attribute for user:', user.id);
           analyticsService.trackIdentify(user.id, user.name, user.email);
+          analyticsService.trackAttribute(user.id, user.birthday, user.age, user.gender);
         } else {
           console.log('[DEBUG] Initial load - User is null, skipping identify');
         }
@@ -52,10 +53,11 @@ function GTMPageViewContent() {
         console.log('[KARTE] View event sent:', pathname);
       }
       
-      // ログイン状態の場合、identifyイベントを送信
+      // ログイン状態の場合、identifyイベントとattributeイベントを送信
       if (user) {
-        console.log('[DEBUG] Sending identify for user:', user.id);
+        console.log('[DEBUG] Sending identify and attribute for user:', user.id);
         analyticsService.trackIdentify(user.id, user.name, user.email);
+        analyticsService.trackAttribute(user.id, user.birthday, user.age, user.gender);
       } else {
         console.log('[DEBUG] User is null, skipping identify');
       }

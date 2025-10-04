@@ -171,9 +171,12 @@ export class AnalyticsService {
   }
 
   // login: ログイン時（カスタムイベント）
-  trackLogin(userId: string, userName: string, email: string) {
+  trackLogin(userId: string, userName: string, email: string, birthday?: string, age?: number, gender?: string) {
     // identifyイベントを送信
     this.trackIdentify(userId, userName, email);
+    
+    // attributeイベントを送信
+    this.trackAttribute(userId, birthday, age, gender);
     
     // loginカスタムイベントを送信（ログイン回数カウント用など）
     this.pushToDataLayer('login', {
