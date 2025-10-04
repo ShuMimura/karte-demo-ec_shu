@@ -28,7 +28,10 @@ function GTMPageViewContent() {
         
         // ログイン状態の場合、identifyイベントを送信
         if (user) {
+          console.log('[DEBUG] Initial load - Sending identify for user:', user.id);
           analyticsService.trackIdentify(user.id, user.name, user.email);
+        } else {
+          console.log('[DEBUG] Initial load - User is null, skipping identify');
         }
         return;
       }
@@ -51,7 +54,10 @@ function GTMPageViewContent() {
       
       // ログイン状態の場合、identifyイベントを送信
       if (user) {
+        console.log('[DEBUG] Sending identify for user:', user.id);
         analyticsService.trackIdentify(user.id, user.name, user.email);
+      } else {
+        console.log('[DEBUG] User is null, skipping identify');
       }
     }
     // userは依存配列に含めない（userの変更でuseEffectを再実行したくない）
