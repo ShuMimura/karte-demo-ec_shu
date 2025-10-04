@@ -54,7 +54,9 @@ function GTMPageViewContent() {
         analyticsService.trackIdentify(user.id, user.name, user.email);
       }
     }
-  }, [pathname, searchParams, user]);
+    // userは依存配列に含めない（userの変更でuseEffectを再実行したくない）
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname, searchParams]);
 
   return null;
 }
